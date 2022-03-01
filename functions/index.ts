@@ -31,60 +31,60 @@ export default function Server(server: FastifyInstance): FastifyInstance {
     }
   }
 
-  server.register(fastifyCache)
   server.register(fastifyEnv, { schema: envSchema, dotenv: true })
-  server.register(ghostAdminApi)
-  server.register(fastifyCORS, { methods: ['GET'],  origin: process.env.ALLOWED_ORIGINS ?? '*' })
+    .after(() => server.register(fastifyCache))
+    .after(() => server.register(ghostAdminApi))
+    .after(() => server.register(fastifyCORS, { methods: ['GET', 'PUT'],  origin: server.config.ALLOWED_ORIGINS }))
+    .after(() => server.addHook('onClose', ({ cache }) => persistCache(cache)))
+    .after(() => server.addHook('onReady', () => loadCache(server.cache)))
+    .after(() => {
+      const controller = new Controller(server)
 
-  server.addHook('onClose', ({ cache }) => persistCache(cache))
-  server.addHook('onReady', () => loadCache(server.cache))
-
-  const controller = new Controller(server)
-
-  server.get(
-    '/members/:userId/labels',
-    {
-      schema: {
-        params: labelsParamsSchema,
-        response: {
-          200: {
-            type: 'array',
-            items: labelSchema
+      server.get(
+        '/members/:userId/labels',
+        {
+          schema: {
+            params: labelsParamsSchema,
+            response: {
+              200: {
+                type: 'array',
+                items: labelSchema
+              }
+            }
           }
-        }
-      }
-    },
-    controller.getLabels.bind(controller)
-  )
+        },
+        controller.getLabels.bind(controller)
+      )
 
-  server.put(
-    '/members/:userId/labels',
-    {
-      schema: {
-        params: labelsParamsSchema,
-        body: labelsBodySchema,
-        response: {
-          200: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                name: {
-                  type: 'string'
-                },
-                active: {
-                  type: 'boolean'
+      server.put(
+        '/members/:userId/labels',
+        {
+          schema: {
+            params: labelsParamsSchema,
+            body: labelsBodySchema,
+            response: {
+              200: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      type: 'string'
+                    },
+                    active: {
+                      type: 'boolean'
+                    }
+                  }
                 }
               }
             }
           }
-        }
-      }
-    },
-    controller.updateLabels.bind(controller)
-  )
+        },
+        controller.updateLabels.bind(controller)
+      )
+    })
 
   return server
 }
 
-if (require.main === module) Server(fastify({ logger: true })).listen(process.env.PORT ?? 3001)
+if (require.main === module) Server(fastify({ logger: true })).listen(process.env.PORT ?? 3001).catch(console.log)

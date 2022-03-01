@@ -31,8 +31,14 @@ export class Controller {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = request.body as any
     const data = { id: member.id, labels }
+    const sameLabels = new Set([...labels, ...member.labels].map(({ name }) => name)).size === member.labels.length
+
+    if (sameLabels) return reply.send(labels)
+
     const response = await this.server.ghostAdminAPI.members.edit(data, { include: encodeURIComponent('labels,email_recipients') })
 
-    return reply.send(response)
+    this.server.cache.set(uuid, labels)
+
+    return reply.send(response.labels.map(({ name }: Label) => ({ name })))
   }
 }

@@ -12,7 +12,7 @@ export class Controller {
 
   async fetchLabelsApi (uuid: string): Promise<{ id: string; labels: Label[] }> {
     const member = await this.fetchMemberApi(uuid)
-    const labels: Label[] = (member.labels ?? []).map(({ name }) => ({ name }))
+    const labels: Label[] = (member?.labels ?? []).map(({ name }) => ({ name }))
     const data = { id: member.id, labels }
 
     this.server.cache.set(uuid, data)
@@ -32,7 +32,7 @@ export class Controller {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = request.body as any
     const data = { id: member.id, labels }
-    const sameLabels = new Set([...labels, ...member.labels].map(({ name }) => name)).size === member.labels.length
+    const sameLabels = new Set([...labels, ...member?.labels].map(({ name }) => name)).size === member?.labels.length
 
     if (sameLabels) return reply.send(labels)
 

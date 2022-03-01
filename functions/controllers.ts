@@ -10,21 +10,20 @@ export class Controller {
   constructor(private server: FastifyInstance) {}
 
 
-  async fetchLabelsApi (uuid: string): Promise<{ id: string; labels: Label[] }> {
+  async fetchLabelsApi (uuid: string): Promise<Label[]> {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = (member?.labels ?? []).map(({ name }) => ({ name }))
-    const data = { id: member?.id, labels }
 
-    this.server.cache.set(uuid, data)
+    this.server.cache.set(uuid, labels)
 
-    return data
+    return labels
   }
 
   async getLabels(request: FastifyRequest, reply: FastifyReply) {
     const uuid: string = encodeURIComponent((request.params as any).userId)
-    const data: { id: string; labels: Label[] } = this.server.cache.get(uuid) ?? await this.fetchLabelsApi(uuid)
+    const labels: Label[] = this.server.cache.get(uuid) ?? await this.fetchLabelsApi(uuid)
 
-    return reply.send(data)
+    return reply.send(labels)
   }
 
   async updateLabels(request: FastifyRequest, reply: FastifyReply) {

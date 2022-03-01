@@ -1,3 +1,4 @@
-# Ghost(Expose Labels From Admin API)
+# Ghost(Expose Admin API)
 
+- Labels API exposed - read, edit
 - User Auth not included

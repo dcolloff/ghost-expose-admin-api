@@ -6,7 +6,6 @@ import ghostAdminApi from './ghost.api'
 import fastifyEnv from 'fastify-env'
 
 export default function Server(server: FastifyInstance): FastifyInstance {
-  const controller = new Controller(server)
   const labelSchema = { type: 'object', properties: { name: { type: 'string' }, slug: { type: 'string' } } }
   const labelsParamsSchema = { userId: { type: 'string', format: 'uuid' } }
   const labelsBodySchema = { type: 'array', items: labelSchema }
@@ -32,13 +31,15 @@ export default function Server(server: FastifyInstance): FastifyInstance {
     }
   }
 
+  server.register(fastifyCache)
+  server.register(fastifyEnv, { schema: envSchema, dotenv: true })
+  server.register(ghostAdminApi)
+  server.register(fastifyCORS, { methods: ['GET'],  origin: process.env.ALLOWED_ORIGINS ?? '*' })
+
   server.addHook('onClose', ({ cache }) => persistCache(cache))
   server.addHook('onReady', () => loadCache(server.cache))
 
-  server.register(fastifyEnv, { schema: envSchema, dotenv: true })
-  server.register(fastifyCache)
-  server.register(ghostAdminApi)
-  server.register(fastifyCORS, { methods: ['GET'],  origin: process.env.ALLOWED_ORIGINS })
+  const controller = new Controller(server)
 
   server.get(
     '/members/:userId/labels',
@@ -53,7 +54,7 @@ export default function Server(server: FastifyInstance): FastifyInstance {
         }
       }
     },
-    controller.getLabels
+    controller.getLabels.bind(controller)
   )
 
   server.put(
@@ -80,7 +81,7 @@ export default function Server(server: FastifyInstance): FastifyInstance {
         }
       }
     },
-    controller.updateLabels
+    controller.updateLabels.bind(controller)
   )
 
   return server

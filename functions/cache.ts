@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache'
 import fastifyPlugin from 'fastify-plugin'
-import { FastifyInstance } from 'fastify'
+import { FastifyInstance, FastifyPluginOptions, HookHandlerDoneFunction } from 'fastify'
 import { writeFileSync, existsSync, readFileSync } from 'fs'
 import { join, resolve } from 'path'
 
@@ -33,8 +33,9 @@ export function loadCache(cache: NodeCache, directoryPath = rootDirectory) {
   }
 };
 
-async function plugin(fastify: FastifyInstance) {
+function plugin(fastify: FastifyInstance, _options: FastifyPluginOptions, next: HookHandlerDoneFunction) {
   fastify.decorate('cache',  nodeCache)
+  next()
 }
 
 process.on('beforeExit', () => persistCache(nodeCache))

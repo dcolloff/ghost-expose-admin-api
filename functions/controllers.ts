@@ -2,13 +2,13 @@ import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
 import { Label } from '../types/global';
 
 export class Controller {
-  constructor(private server: FastifyInstance) {}
-
   async fetchMemberApi (uuid: string): Promise<{ id: string; labels: Label[] }> {
     const members = await this.server.ghostAdminAPI.members.browse({ filter: `uuid:${uuid}` })
 
     return members[0]
   }
+  constructor(private server: FastifyInstance) {}
+
 
   async fetchLabelsApi (uuid: string): Promise<Label[]> {
     const member = await this.fetchMemberApi(uuid)

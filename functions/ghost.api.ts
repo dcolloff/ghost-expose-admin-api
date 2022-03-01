@@ -1,10 +1,10 @@
 import GhostAdminAPI from '@tryghost/admin-api'
 import axios from 'axios'
-import { FastifyInstance } from 'fastify'
+import { FastifyInstance, FastifyPluginOptions, HookHandlerDoneFunction } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
 import { MakeRequestArgs } from '../types/global'
 
-async function plugin(fastify: FastifyInstance) {
+function plugin(fastify: FastifyInstance, _options: FastifyPluginOptions, next: HookHandlerDoneFunction) {
   const ghostAdminAPI = new GhostAdminAPI({
     url: fastify.config.GHOST_API_URL,
     key: fastify.config.GHOST_ADMIN_API_KEY,
@@ -15,6 +15,8 @@ async function plugin(fastify: FastifyInstance) {
   })
 
   fastify.decorate('ghostAdminAPI',  ghostAdminAPI)
+
+  next()
 }
 
 export default fastifyPlugin(plugin, { name: 'ghostAdminAPI' })

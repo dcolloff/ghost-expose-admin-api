@@ -1,11 +1,11 @@
-import { FastifyInstance } from 'fastify'
+import fastify, { FastifyInstance } from 'fastify'
 import fastifyCORS from 'fastify-cors'
 import { Controller } from '../api/controllers'
 import fastifyCache, { loadCache, persistCache } from '../api/cache'
 import ghostAdminApi from '../api/ghost.api'
 import fastifyEnv from 'fastify-env'
 
-export default async function Server(server: FastifyInstance): Promise<FastifyInstance> {
+export default function Server(server: FastifyInstance): FastifyInstance {
   const controller = new Controller(server)
   const labelSchema = { type: 'object', properties: { name: { type: 'string' }, slug: { type: 'string' } } }
   const labelsParamsSchema = { userId: { type: 'string', format: 'uuid' } }
@@ -83,5 +83,7 @@ export default async function Server(server: FastifyInstance): Promise<FastifyIn
     controller.updateLabels
   )
 
-  return Promise.resolve(server)
+  return server
 }
+
+if (require.main === module) Server(fastify({ logger: true })).listen(process.env.PORT ?? 3001)

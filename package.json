@@ -2,11 +2,11 @@
   "name": "ghost-expose-admin-api",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/functions/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "vercel": "vercel dev",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/functions/index.js"
   },
   "keywords": [],
   "author": "",

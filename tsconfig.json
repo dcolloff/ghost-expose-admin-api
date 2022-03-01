@@ -3,7 +3,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "target": "es2015",
-    "baseUrl": "api",
+    "baseUrl": ".",
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
@@ -34,10 +34,13 @@
     "pretty": true,
     "paths": {
       "@/*": [
-        "api/*"
+        "api/*",
+        "functions/*"
       ]
     },
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "../node_modules/@types"
     ],
@@ -46,6 +49,7 @@
     ]
   },
   "include": [
-    "api"
+    "api",
+    "functions/index.ts"
   ]
 }

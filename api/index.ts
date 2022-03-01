@@ -2,7 +2,7 @@ import Fastify, { FastifyReply, FastifyRequest } from 'fastify'
 
 const app = Fastify({ logger: true })
 
-app.register(import('./server'), { })
+app.register(import('../functions'), { })
 
 export default async function vercelHandler(request: FastifyRequest, reply: FastifyReply) {
     await app.ready()

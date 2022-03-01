@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
-import { Label } from './types/global';
+import { Label } from '../types/global';
 
 export class Controller {
   constructor(private server: FastifyInstance) {}

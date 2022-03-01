@@ -1,8 +1,8 @@
 import fastify, { FastifyInstance } from 'fastify'
 import fastifyCORS from 'fastify-cors'
-import { Controller } from '../api/controllers'
-import fastifyCache, { loadCache, persistCache } from '../api/cache'
-import ghostAdminApi from '../api/ghost.api'
+import { Controller } from './controllers'
+import fastifyCache, { loadCache, persistCache } from './cache'
+import ghostAdminApi from './ghost.api'
 import fastifyEnv from 'fastify-env'
 
 export default function Server(server: FastifyInstance): FastifyInstance {

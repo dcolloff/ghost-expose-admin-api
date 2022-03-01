@@ -2,7 +2,7 @@ import GhostAdminAPI from '@tryghost/admin-api'
 import axios from 'axios'
 import { FastifyInstance } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
-import { MakeRequestArgs } from './types/global'
+import { MakeRequestArgs } from '../types/global'
 
 async function plugin(fastify: FastifyInstance) {
   const ghostAdminAPI = new GhostAdminAPI({

@@ -3,7 +3,7 @@
   "compileOnSave": true,
   "compilerOptions": {
     "target": "es2015",
-    "baseUrl": "src",
+    "baseUrl": "api",
     "strict": true,
     "outDir": "dist",
     "sourceMap": true,
@@ -34,7 +34,7 @@
     "pretty": true,
     "paths": {
       "@/*": [
-        "./src/*"
+        "api/*"
       ]
     },
     "types": ["node"],
@@ -46,6 +46,6 @@
     ]
   },
   "include": [
-    "src"
+    "api"
   ]
 }

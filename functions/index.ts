@@ -47,8 +47,26 @@ export default function Server(server: FastifyInstance): FastifyInstance {
             params: labelsParamsSchema,
             response: {
               200: {
-                type: 'array',
-                items: labelSchema
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string'
+                  },
+                  labels: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string'
+                        },
+                        active: {
+                          type: 'boolean'
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }

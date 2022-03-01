@@ -22,9 +22,9 @@ export interface MakeRequestArgs {
 }
 
 export interface Label {
-  id: string,
+  id?: string,
   name: string,
-  slug: string,
-  created_at: Date
-  updated_at: Date
+  slug?: string,
+  created_at?: Date
+  updated_at?: Date
 }

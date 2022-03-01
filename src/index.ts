@@ -37,7 +37,7 @@ server.addHook('onReady', () => loadCache(server.cache))
 server.register(fastifyEnv, { schema: envSchema, dotenv: true })
 server.register(fastifyCache)
 server.register(ghostAdminApi)
-server.register(fastifyCORS, { methods: ['GET'],  origin: 'localhost'})
+server.register(fastifyCORS, { methods: ['GET'],  origin: process.env.ALLOWED_ORIGINS })
 
 server.get(
   '/members/:userId/labels',

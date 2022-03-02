@@ -9,6 +9,43 @@ export default function Server(server: FastifyInstance): FastifyInstance {
   const labelSchema = { type: 'object', properties: { name: { type: 'string' }, slug: { type: 'string' } } }
   const labelsParamsSchema = { userId: { type: 'string', format: 'uuid' } }
   const labelsBodySchema = { type: 'array', items: labelSchema }
+  const memberSchema = {
+    id: 'string',
+    uuid: 'string',
+    email: 'string',
+    name: 'string',
+    note: 'string',
+    geolocation: 'string',
+    subscribed: 'boolean',
+    created_at: {
+      type: 'string',
+      format: 'date'
+    },
+    updated_at: {
+      type: 'string',
+      format: 'date'
+    },
+    labels: labelsBodySchema,
+    subscriptions: 'array',
+    avatar_image: 'string',
+    comped: 'boolean',
+    email_count: 'number',
+    email_opened_count: 'number',
+    email_open_rate: 'number',
+    status: 'string'
+  }
+  const labelWebhookBodySchema = {
+    type: 'object',
+    properties: {
+      member: {
+        type: 'object',
+        properties: {
+          current: memberSchema,
+          previous: memberSchema
+        }
+      }
+    }
+  }
   const envSchema = {
     type: 'object',
     required: ['PORT', 'GHOST_API_URL', 'GHOST_ADMIN_API_KEY', 'ALLOWED_ORIGINS'],
@@ -46,28 +83,7 @@ export default function Server(server: FastifyInstance): FastifyInstance {
           schema: {
             params: labelsParamsSchema,
             response: {
-              200: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'string'
-                  },
-                  labels: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        name: {
-                          type: 'string'
-                        },
-                        active: {
-                          type: 'boolean'
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              200: labelsBodySchema
             }
           }
         },
@@ -81,24 +97,24 @@ export default function Server(server: FastifyInstance): FastifyInstance {
             params: labelsParamsSchema,
             body: labelsBodySchema,
             response: {
-              200: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    name: {
-                      type: 'string'
-                    },
-                    active: {
-                      type: 'boolean'
-                    }
-                  }
-                }
-              }
+              200: labelsBodySchema
             }
           }
         },
         controller.updateLabels.bind(controller)
+      )
+
+      server.post(
+        '/members/labels',
+        {
+          schema: {
+            body: labelWebhookBodySchema,
+            response: {
+              200: labelsBodySchema
+            }
+          }
+        },
+        controller.updateLabelsWebhook.bind(controller)
       )
     })
 

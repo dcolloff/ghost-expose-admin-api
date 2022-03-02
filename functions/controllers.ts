@@ -14,7 +14,6 @@ export class Controller {
   async fetchLabelsApi (uuid: string): Promise<Label[]> {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = (member?.labels ?? []).map(({ name }) => ({ name }))
-    console.log(labels)
 
     if (labels.length) this.server.cache.set(uuid, labels)
 
@@ -45,5 +44,16 @@ export class Controller {
     this.server.cache.set(uuid, labels)
 
     return reply.send(response.labels.map(({ name }: Label) => ({ name })))
+  }
+
+  async updateLabelsWebhook(request: FastifyRequest, reply: FastifyReply) {
+    const member = (request.body as any).member.current
+    const uuid: string = encodeURIComponent(member.uuid)
+    const labels: Label[] = member.labels
+    const response = labels.map(({ name }) => ({ name }))
+
+    this.server.cache.set(uuid, response)
+
+    return reply.send(labels)
   }
 }

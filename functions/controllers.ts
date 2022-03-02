@@ -32,7 +32,7 @@ export class Controller {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = request.body as any
     const data = { id: member?.id, labels }
-    const sameLabels = new Set([...labels, ...member?.labels].map(({ name }) => name)).size === member?.labels.length
+    const sameLabels = new Set([...labels, ...member?.labels].map(({ name }) => name)).size === labels.length
 
     if (sameLabels) {
       this.server.cache.set(uuid, member.labels.map(({ name }) => ({ name })))

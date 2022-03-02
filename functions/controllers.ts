@@ -7,6 +7,7 @@ export class Controller {
 
     return members[0]
   }
+
   constructor(private server: FastifyInstance) {}
 
 

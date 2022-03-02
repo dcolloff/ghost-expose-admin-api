@@ -105,4 +105,4 @@ export default function Server(server: FastifyInstance): FastifyInstance {
   return server
 }
 
-if (require.main === module) Server(fastify({ logger: true })).listen(process.env.PORT ?? 3001).catch(console.log)
+if (require.main === module) Server(fastify({ logger: true })).listen(process.env.PORT ?? 3001).catch(console.error)

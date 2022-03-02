@@ -14,8 +14,9 @@ export class Controller {
   async fetchLabelsApi (uuid: string): Promise<Label[]> {
     const member = await this.fetchMemberApi(uuid)
     const labels: Label[] = (member?.labels ?? []).map(({ name }) => ({ name }))
+    console.log(labels)
 
-    this.server.cache.set(uuid, labels)
+    if (labels.length) this.server.cache.set(uuid, labels)
 
     return labels
   }
@@ -34,7 +35,10 @@ export class Controller {
     const data = { id: member?.id, labels }
     const sameLabels = new Set([...labels, ...member?.labels].map(({ name }) => name)).size === member?.labels.length
 
-    if (sameLabels) return reply.send(labels)
+    if (sameLabels) {
+      this.server.cache.set(uuid, member.labels.map(({ name }) => ({ name })))
+      return reply.send(labels)
+    }
 
     const response = await this.server.ghostAdminAPI.members.edit(data, { include: encodeURIComponent('labels,email_recipients') })
 

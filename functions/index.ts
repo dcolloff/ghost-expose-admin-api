@@ -72,7 +72,7 @@ export default function Server(server: FastifyInstance): FastifyInstance {
     .after(() => server.register(fastifyCache))
     .after(() => server.register(ghostAdminApi))
     .after(() => server.register(fastifyCORS, {
-      methods: ['GET', 'PUT'],
+      methods: ['GET', 'PUT', 'POST'],
       origin: server.config.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
     }))
     .after(() => server.addHook('onClose', ({ cache }) => persistCache(cache)))
